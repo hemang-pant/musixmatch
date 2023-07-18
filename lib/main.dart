@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:musixmatch/features/feature_1/presentation/pages/home/charts.dart';
+
+import 'injection_container.dart';
 
 Future<void> main() async {
+  await initializeDependecies();
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
@@ -10,15 +14,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Home'),
-        ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
-      ),
+    return const MaterialApp(
+      home: Charts(),
     );
   }
 }
