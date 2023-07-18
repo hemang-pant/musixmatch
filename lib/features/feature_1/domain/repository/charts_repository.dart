@@ -5,5 +5,5 @@ import '../../../../core/resources/data_state.dart';
 abstract class TrackRepository {
 
   
-  Future<DataState<List<TrackEntity>>> getCharts(int page, String? customCountry);
+  Future<DataState<List<TrackEntity>>> getCharts(int? page, String? customCountry);
 }

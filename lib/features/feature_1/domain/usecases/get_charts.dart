@@ -13,7 +13,7 @@ class GetChartsUseCase implements UseCase<DataState<List<TrackEntity>>,void> {
   GetChartsUseCase(this._trackRepository);
   
   @override
-  Future<DataState<List<TrackEntity>>> call(void params, {int page = 1, String? customCountry = country}) {
+  Future<DataState<List<TrackEntity>>> call(void params, {int? page = 1, String? customCountry = country}) {
     return _trackRepository.getCharts(page, customCountry);
   }
 }

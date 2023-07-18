@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:musixmatch/core/resources/data_state.dart';
 import 'package:musixmatch/features/feature_1/domain/usecases/get_charts.dart';
 import 'package:musixmatch/features/feature_1/presentation/bloc/chart/remote/remote_chart_event.dart';
@@ -6,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RemoteChartBloc extends Bloc<RemoteChartEvent, RemoteChartState> {
   final GetChartsUseCase _getArticleUseCase;
-  RemoteChartBloc(this._getArticleUseCase) : super(RemoteChartLoading()) {
+  RemoteChartBloc(this._getArticleUseCase) : super(const RemoteChartLoading()) {
     on<GetChart>(onGetChart);
   }
 
@@ -18,9 +20,9 @@ class RemoteChartBloc extends Bloc<RemoteChartEvent, RemoteChartState> {
       emit(RemoteChartSuccess(dataState.data!));
     }
 
-    if ( dataState is DataFailed) {
+    if (dataState is DataFailed) {
+      log(dataState.error.toString());
       emit(RemoteChartFailed(dataState.error!));
     }
-    
   }
 }

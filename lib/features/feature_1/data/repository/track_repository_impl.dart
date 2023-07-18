@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/io.dart';
@@ -15,11 +16,14 @@ class TrackRepositoryImpl implements TrackRepository {
 
   @override
   Future<DataState<List<TrackModel>>> getCharts(
-      int page, String? customCountry) async {
+      int? page, String? customCountry) async {
     try {
+      log('TrackRepositoryImpl: getCharts: page: $page, customCountry: $customCountry');
       final httpResponse = await _trackApiService.getCharts(
         apiKey: trackAPIKey,
-        country: customCountry ?? country,
+        country: (customCountry != null && customCountry.isNotEmpty)
+            ? customCountry
+            : country,
         page: page,
         pageSize: pageSize,
         hasLyrics: hasLyrics,

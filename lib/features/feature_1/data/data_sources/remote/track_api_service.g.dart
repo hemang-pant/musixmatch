@@ -16,7 +16,7 @@ class _TrackApiService implements TrackApiService {
     baseUrl ??= 'https://api.musixmatch.com/ws/1.1/';
   }
 
-  final Dio _dio;
+  Dio _dio;
 
   String? baseUrl;
 
@@ -28,6 +28,18 @@ class _TrackApiService implements TrackApiService {
     String? country,
     int? hasLyrics,
   }) async {
+    _dio = Dio()
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onResponse: (response, handler) {
+            if (response.requestOptions.method == HttpMethod.GET) {
+              response.data = jsonDecode(response.data as String);
+            }
+            return handler.next(response);
+          },
+        ),
+      );
+    log('.g function called');
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'apikey': apiKey,
@@ -39,26 +51,67 @@ class _TrackApiService implements TrackApiService {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio.fetch<List<dynamic>>(
-        _setStreamType<HttpResponse<List<TrackModel>>>(Options(
+    var _result;
+    final temp = await _dio
+        .fetch<Map<String, dynamic>>(
+            _setStreamType<HttpResponse<List<TrackModel>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
-            .compose(
-              _dio.options,
-              'chart.tracks.get',
-              queryParameters: queryParameters,
-              data: _data,
-            )
-            .copyWith(
-                baseUrl: _combineBaseUrls(
-              _dio.options.baseUrl,
-              baseUrl,
-            ))));
-    var value = _result.data!
-        .map((dynamic i) => TrackModel.fromJson(i as Map<String, dynamic>))
-        .toList();
+                .compose(
+                  _dio.options,
+                  'chart.tracks.get',
+                  queryParameters: queryParameters,
+                  data: _data,
+                )
+                .copyWith(
+                    baseUrl: _combineBaseUrls(
+                  _dio.options.baseUrl,
+                  baseUrl,
+                ))))
+        .then((value) {
+      log('[API response data]: in next line');
+      _result = value;
+    });
+    log(_result.data['message']['body']['track_list'].length.toString());
+    List<TrackModel> value = [];
+    for (int i = 0;
+        i < _result.data['message']['body']['track_list'].length;
+        i++) {
+      String name = _result.data['message']['body']['track_list'][i]['track']
+          ['track_name'];
+      value.add(
+        TrackModel(
+          name: name,
+          artistName: _result.data['message']['body']['track_list'][i]['track']
+              ['artist_name'],
+          albumName: _result.data['message']['body']['track_list'][i]['track']
+              ['album_name'],
+          genreName: _result.data['message']['body']['track_list'][i]['track']
+              ['primary_genres']['music_genre_list'][0]['music_genre']
+                  ['music_genre_name'],
+          genreExtendedName: _result.data['message']['body']['track_list'][i]
+                  ['track']['primary_genres']['music_genre_list'][0]
+              ['music_genre']['music_genre_name_extended'],
+          artistId: _result.data['message']['body']['track_list'][i]['track']
+              ['artist_id'],
+          albumId: _result.data['message']['body']['track_list'][i]['track']
+              ['album_id'],
+          genreId: _result.data['message']['body']['track_list'][i]['track']
+              ['primary_genres']['music_genre_list'][0]['music_genre']
+                  ['music_genre_id'],
+          genreExtendedId: _result.data['message']['body']['track_list'][i]
+                  ['track']['primary_genres']['music_genre_list'][0]
+              ['music_genre']['music_genre_parent_id'],
+          isExplicit: (_result.data['message']['body']['track_list'][i]['track']
+              ['explicit']==0) ? false : true,
+          trackRating: double.parse(_result.data['message']['body']['track_list'][i]['track']['track_rating'].toString()),
+          numFavourite: _result.data['message']['body']['track_list'][i]
+              ['track']['num_favourite'],
+        )
+      );
+    }
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }

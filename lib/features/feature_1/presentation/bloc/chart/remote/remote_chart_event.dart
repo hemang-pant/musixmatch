@@ -3,11 +3,11 @@ abstract class RemoteChartEvent {
 }
 
 class GetChart extends RemoteChartEvent {
-  final int page;
+  final int? page;
   final String? customCountry;
 
   const GetChart(
-    this.page, {
-    this.customCountry,
+    {
+    this.customCountry,this.page
   });
 } 
