@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:musixmatch/config/routes/routes.dart';
+import 'package:musixmatch/features/feature_1/presentation/bloc/chart/remote/remote_chart_bloc.dart';
+import 'package:musixmatch/features/feature_1/presentation/bloc/chart/remote/remote_chart_event.dart';
+import 'package:musixmatch/features/feature_1/presentation/pages/home/charts.dart';
+
+import 'injection_container.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDependecies();
   runApp(const MyApp());
 }
 
@@ -10,14 +18,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Home'),
-        ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
+    return BlocProvider<RemoteChartBloc>(
+      create: (context) => sl()..add(
+        const GetChart()
+      ),
+      child: const MaterialApp(
+        onGenerateRoute: AppRoutes.onGenerateRoutes,
+        home: Charts(),
       ),
     );
   }
