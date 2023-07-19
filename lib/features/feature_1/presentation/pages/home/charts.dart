@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:musixmatch/features/feature_1/domain/entities/track.dart';
 import 'package:musixmatch/features/feature_1/presentation/bloc/chart/remote/remote_chart_bloc.dart';
 import 'package:musixmatch/features/feature_1/presentation/bloc/chart/remote/remote_chart_state.dart';
 
@@ -34,11 +35,12 @@ class Charts extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListTile(
+                onTap: () => _onTrackTapped(_,state.tracks![index]), // TODO: Navigate to track details
                 title: Text(state.tracks![index].name?? ''),
                 subtitle: Text(state.tracks![index].artistName?? ''),
                 leading: const Icon(
                   Icons.music_note,
-                  color: Colors.blue,
+                  color: Colors.black,
                 ),
               ),
             );
@@ -50,5 +52,10 @@ class Charts extends StatelessWidget {
       }
       return const SizedBox();
     });
+  }
+
+  _onTrackTapped(BuildContext buildContext, TrackEntity trackEntity) {
+    log('Track tapped: ${trackEntity.id}');
+    Navigator.pushNamed(buildContext, '/TrackDetails', arguments: trackEntity.id);
   }
 }

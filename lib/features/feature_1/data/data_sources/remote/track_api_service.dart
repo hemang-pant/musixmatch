@@ -20,4 +20,10 @@ abstract class TrackApiService {
     @Query("country") String? country,
     @Query("f_has_lyrics") int? hasLyrics,
   });
+
+  @GET('track.get')
+  Future<HttpResponse<TrackModel>> getTrack({
+    @Query("apikey") String? apiKey,
+    @Query("track_id") int? trackId,
+  });
 }

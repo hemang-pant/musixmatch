@@ -31,6 +31,7 @@ class TrackModel extends TrackEntity {
     isExplicit: isExplicit,
     trackRating: trackRating,
     numFavourite: numFavourite,
+    lyrics: lyrics,
   );
 
   factory TrackModel.fromJson(Map < String, dynamic > map){
@@ -59,6 +60,7 @@ class TrackModel extends TrackEntity {
       isExplicit: entity.isExplicit,
       trackRating: entity.trackRating,
       numFavourite: entity.numFavourite,
+      lyrics: entity.lyrics,
     );
   }
 }
