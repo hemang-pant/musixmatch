@@ -212,8 +212,12 @@ class _TrackApiService implements TrackApiService {
             ))));
 
     var temp = _result.data!['message']['body']['track'];
-    var lyrics =
-        _lyricsResult.data!['message']['body']['lyrics']['lyrics_body'];
+    var omit =
+        "******* This Lyrics is NOT for Commercial use *******";
+    var lyrics = _lyricsResult.data!['message']['body']['lyrics']['lyrics_body']
+        .toString();
+        lyrics.replaceAll(omit, '');
+        lyrics = lyrics.replaceAll("(1409623598746)", '');
     log(lyrics.toString());
     final value = TrackModel(
       id: temp['track_id'],
@@ -233,9 +237,8 @@ class _TrackApiService implements TrackApiService {
       isExplicit: (temp['explicit'] == 0) ? false : true,
       trackRating: double.parse(temp['track_rating'].toString()),
       numFavourite: temp['num_favourite'],
-      lyrics: lyrics.toString(),
+      lyrics: lyrics.replaceAll("******* This Lyrics is NOT for Commercial use *******", ''),
     );
-    log('TrackApiService: getTrack: value: ${value.lyrics}');
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }

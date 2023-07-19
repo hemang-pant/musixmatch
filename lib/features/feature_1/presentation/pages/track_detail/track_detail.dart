@@ -83,16 +83,47 @@ class TrackDetailsView extends HookWidget {
           ),
 
           const SizedBox(height: 14),
-          // DateTime
-          Row(
-            children: [
-              const Icon(Ionicons.time_outline, size: 16),
-              const SizedBox(width: 4),
-              Text(
-                track.artistName!,
-                style: const TextStyle(fontSize: 12),
-              ),
-            ],
+          // Track Details
+          SingleChildScrollView(
+            //padding: const EdgeInsets.all(8.0),
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                const Icon(Icons.person_2_rounded, size: 16),
+                const SizedBox(width: 4),
+                Text(
+                  track.artistName!,
+                  style: const TextStyle(fontSize: 12),
+                ),
+                Text(' • ', style: const TextStyle(fontSize: 12)),
+                Icon(Icons.album, size: 16),
+                Text(
+                  track.albumName! ?? 'Unknown Album',
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+            child: Row(
+              children: [
+                Icon(Icons.favorite, size: 16),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      track.numFavourite.toString() ?? '0',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                  (track.isExplicit!)?
+                    Icon(Icons.explicit) : Text(''),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Genre: ${track.genreName}'),
+                  ),
+              ],
+            ),
           ),
         ],
       ),
